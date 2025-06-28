@@ -1,0 +1,27 @@
+{
+  "name": "trip-planning-app",
+  "version": "1.0.0",
+  "description": "Full-stack trip planning application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "webpack --mode production"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "axios": "^1.4.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "date-fns": "^2.30.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "@babel/core": "^7.22.0",
+    "@babel/preset-react": "^7.22.0",
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.0",
+    "babel-loader": "^9.1.0"
+  }
+}
