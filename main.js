@@ -1,273 +1,413 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TravelHub - Your Ultimate Travel Companion</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🌍 TravelHub</h1>
-            <p>Your AI-powered travel companion for seamless booking and planning</p>
-        </div>
+// TravelHub JavaScript Functionality
 
-        <div class="nav-tabs">
-            <button class="nav-tab active" onclick="showTab('flights')">✈️ Flights</button>
-            <button class="nav-tab" onclick="showTab('hotels')">🏨 Hotels</button>
-            <button class="nav-tab" onclick="showTab('itinerary')">📅 AI Itinerary</button>
-            <button class="nav-tab" onclick="showTab('edit-itinerary')">✏️ Edit Plans</button>
-            <button class="nav-tab" onclick="showTab('hotel-search')">🔍 Find Hotels</button>
-            <button class="nav-tab" onclick="showTab('attractions')">🗺️ Attractions</button>
-        </div>
+// Tab switching functionality
+function showTab(tabName) {
+    // Hide all tab contents
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabContents.forEach(tab => tab.classList.add('hidden'));
+    
+    // Remove active class from all nav tabs
+    const navTabs = document.querySelectorAll('.nav-tab');
+    navTabs.forEach(tab => tab.classList.remove('active'));
+    
+    // Show selected tab content
+    const selectedTab = document.getElementById(tabName);
+    if (selectedTab) {
+        selectedTab.classList.remove('hidden');
+    }
+    
+    // Add active class to clicked nav tab
+    const activeNavTab = document.querySelector(`[onclick="showTab('${tabName}')"]`);
+    if (activeNavTab) {
+        activeNavTab.classList.add('active');
+    }
+}
 
-        <!-- Flights Tab -->
-        <div id="flights" class="tab-content">
-            <h2>✈️ Book Flight Tickets</h2>
-            <form id="flight-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="from">From</label>
-                        <input type="text" id="from" placeholder="Departure city" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="to">To</label>
-                        <input type="text" id="to" placeholder="Destination city" required>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="departure">Departure Date</label>
-                        <input type="date" id="departure" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="return">Return Date</label>
-                        <input type="date" id="return">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="passengers">Passengers</label>
-                        <select id="passengers">
-                            <option value="1">1 Passenger</option>
-                            <option value="2">2 Passengers</option>
-                            <option value="3">3 Passengers</option>
-                            <option value="4">4+ Passengers</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="class">Class</label>
-                        <select id="class">
-                            <option value="economy">Economy</option>
-                            <option value="premium">Premium Economy</option>
-                            <option value="business">Business</option>
-                            <option value="first">First Class</option>
-                        </select>
-                    </div>
-                </div>
-                <button type="submit" class="btn">Search Flights</button>
-            </form>
-            <div id="flight-results" class="search-results"></div>
-        </div>
+// Flight search functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const flightForm = document.getElementById('flight-form');
+    if (flightForm) {
+        flightForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            searchFlights();
+        });
+    }
+    
+    const hotelForm = document.getElementById('hotel-form');
+    if (hotelForm) {
+        hotelForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            searchHotels();
+        });
+    }
+    
+    const itineraryForm = document.getElementById('itinerary-form');
+    if (itineraryForm) {
+        itineraryForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            generateItinerary();
+        });
+    }
+    
+    const advancedHotelForm = document.getElementById('advanced-hotel-search');
+    if (advancedHotelForm) {
+        advancedHotelForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            searchAdvancedHotels();
+        });
+    }
+    
+    const attractionsForm = document.getElementById('attractions-form');
+    if (attractionsForm) {
+        attractionsForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            searchAttractions();
+        });
+    }
+});
 
-        <!-- Hotels Tab -->
-        <div id="hotels" class="tab-content hidden">
-            <h2>🏨 Book Hotels</h2>
-            <form id="hotel-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="hotel-destination">Destination</label>
-                        <input type="text" id="hotel-destination" placeholder="City or hotel name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="hotel-checkin">Check-in Date</label>
-                        <input type="date" id="hotel-checkin" required>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="hotel-checkout">Check-out Date</label>
-                        <input type="date" id="hotel-checkout" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="hotel-guests">Guests</label>
-                        <select id="hotel-guests">
-                            <option value="1">1 Guest</option>
-                            <option value="2">2 Guests</option>
-                            <option value="3">3 Guests</option>
-                            <option value="4">4+ Guests</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="hotel-budget">Budget Range</label>
-                    <select id="hotel-budget">
-                        <option value="budget">Budget ($50-100/night)</option>
-                        <option value="mid">Mid-range ($100-250/night)</option>
-                        <option value="luxury">Luxury ($250+/night)</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn">Search Hotels</button>
-            </form>
-            <div id="hotel-results" class="search-results"></div>
-        </div>
-
-        <!-- AI Itinerary Tab -->
-        <div id="itinerary" class="tab-content hidden">
-            <h2>📅 AI-Powered Itinerary Planning</h2>
-            <form id="itinerary-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="trip-destination">Destination</label>
-                        <input type="text" id="trip-destination" placeholder="Where are you going?" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="trip-duration">Duration (days)</label>
-                        <select id="trip-duration">
-                            <option value="1">1 day</option>
-                            <option value="3">3 days</option>
-                            <option value="5">5 days</option>
-                            <option value="7">1 week</option>
-                            <option value="14">2 weeks</option>
-                        </select>
+function searchFlights() {
+    const from = document.getElementById('from').value;
+    const to = document.getElementById('to').value;
+    const departure = document.getElementById('departure').value;
+    const returnDate = document.getElementById('return').value;
+    const passengers = document.getElementById('passengers').value;
+    const classType = document.getElementById('class').value;
+    
+    const resultsDiv = document.getElementById('flight-results');
+    
+    // Simulate flight search results
+    const flights = [
+        {
+            airline: 'SkyAir',
+            departure: '10:00 AM',
+            arrival: '2:30 PM',
+            price: '$299',
+            duration: '4h 30m',
+            stops: 'Direct'
+        },
+        {
+            airline: 'GlobalWings',
+            departure: '2:15 PM',
+            arrival: '6:45 PM',
+            price: '$245',
+            duration: '4h 30m',
+            stops: '1 stop'
+        },
+        {
+            airline: 'PremiumAir',
+            departure: '8:30 AM',
+            arrival: '1:00 PM',
+            price: '$450',
+            duration: '4h 30m',
+            stops: 'Direct'
+        }
+    ];
+    
+    let html = '<h3>Available Flights</h3>';
+    flights.forEach(flight => {
+        html += `
+            <div class="result-item">
+                <div class="flight-info">
+                    <h4>${flight.airline}</h4>
+                    <div class="flight-details">
+                        <span>${flight.departure} - ${flight.arrival}</span>
+                        <span>${flight.duration} • ${flight.stops}</span>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="trip-interests">Interests</label>
-                    <textarea id="trip-interests" rows="3" placeholder="What do you like to do? (museums, food, adventure, nightlife, history, etc.)"></textarea>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="trip-budget">Budget</label>
-                        <select id="trip-budget">
-                            <option value="budget">Budget-friendly</option>
-                            <option value="moderate">Moderate</option>
-                            <option value="luxury">Luxury</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="trip-style">Travel Style</label>
-                        <select id="trip-style">
-                            <option value="relaxed">Relaxed</option>
-                            <option value="moderate">Moderate</option>
-                            <option value="packed">Action-packed</option>
-                        </select>
-                    </div>
-                </div>
-                <button type="submit" class="btn">Generate AI Itinerary</button>
-            </form>
-            <div id="itinerary-results" class="search-results"></div>
-        </div>
-
-        <!-- Edit Itinerary Tab -->
-        <div id="edit-itinerary" class="tab-content hidden">
-            <h2>✏️ Edit Your Itinerary</h2>
-            <div class="ai-suggestion">
-                <strong>💡 AI Tip:</strong> You can drag and drop activities to reorder them, or click edit to modify details!
-            </div>
-            <div id="editable-itinerary">
-                <div class="itinerary-item">
-                    <div class="time-slot">Day 1 - Morning (9:00 AM)</div>
-                    <h4>Visit Central Park</h4>
-                    <p>Start your day with a peaceful walk through Central Park. Visit Bethesda Fountain and enjoy the morning atmosphere.</p>
-                    <div class="edit-controls">
-                        <button onclick="editActivity(this)" style="background: #667eea; color: white;">Edit</button>
-                        <button onclick="removeActivity(this)" style="background: #f5576c; color: white;">Remove</button>
-                        <button onclick="moveActivity(this, 'up')" style="background: #28a745; color: white;">↑ Move Up</button>
-                        <button onclick="moveActivity(this, 'down')" style="background: #28a745; color: white;">↓ Move Down</button>
-                    </div>
-                </div>
-                <div class="itinerary-item">
-                    <div class="time-slot">Day 1 - Afternoon (2:00 PM)</div>
-                    <h4>Metropolitan Museum of Art</h4>
-                    <p>Explore one of the world's greatest art museums. Don't miss the Egyptian collection and rooftop garden.</p>
-                    <div class="edit-controls">
-                        <button onclick="editActivity(this)" style="background: #667eea; color: white;">Edit</button>
-                        <button onclick="removeActivity(this)" style="background: #f5576c; color: white;">Remove</button>
-                        <button onclick="moveActivity(this, 'up')" style="background: #28a745; color: white;">↑ Move Up</button>
-                        <button onclick="moveActivity(this, 'down')" style="background: #28a745; color: white;">↓ Move Down</button>
-                    </div>
+                <div class="flight-price">
+                    <span class="price">${flight.price}</span>
+                    <button class="btn btn-small">Select</button>
                 </div>
             </div>
-            <button class="btn btn-secondary" onclick="addNewActivity()">+ Add New Activity</button>
-        </div>
+        `;
+    });
+    
+    resultsDiv.innerHTML = html;
+}
 
-        <!-- Hotel Search Tab -->
-        <div id="hotel-search" class="tab-content hidden">
-            <h2>🔍 Find the Perfect Hotel</h2>
-            <form id="advanced-hotel-search">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="search-location">Location</label>
-                        <input type="text" id="search-location" placeholder="City, neighborhood, or landmark" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="search-price">Price Range</label>
-                        <select id="search-price">
-                            <option value="any">Any price</option>
-                            <option value="under50">Under $50</option>
-                            <option value="50-100">$50 - $100</option>
-                            <option value="100-200">$100 - $200</option>
-                            <option value="200-500">$200 - $500</option>
-                            <option value="over500">$500+</option>
-                        </select>
+function searchHotels() {
+    const destination = document.getElementById('hotel-destination').value;
+    const checkin = document.getElementById('hotel-checkin').value;
+    const checkout = document.getElementById('hotel-checkout').value;
+    const guests = document.getElementById('hotel-guests').value;
+    const budget = document.getElementById('hotel-budget').value;
+    
+    const resultsDiv = document.getElementById('hotel-results');
+    
+    // Simulate hotel search results
+    const hotels = [
+        {
+            name: 'Grand Plaza Hotel',
+            rating: 4.5,
+            price: '$120/night',
+            amenities: ['WiFi', 'Pool', 'Gym'],
+            location: 'Downtown'
+        },
+        {
+            name: 'Comfort Inn Express',
+            rating: 3.8,
+            price: '$85/night',
+            amenities: ['WiFi', 'Breakfast'],
+            location: 'Airport Area'
+        },
+        {
+            name: 'Luxury Resort & Spa',
+            rating: 4.9,
+            price: '$350/night',
+            amenities: ['WiFi', 'Pool', 'Spa', 'Restaurant'],
+            location: 'Beachfront'
+        }
+    ];
+    
+    let html = '<h3>Available Hotels</h3>';
+    hotels.forEach(hotel => {
+        html += `
+            <div class="result-item">
+                <div class="hotel-info">
+                    <h4>${hotel.name}</h4>
+                    <div class="hotel-details">
+                        <span>⭐ ${hotel.rating} • ${hotel.location}</span>
+                        <span>${hotel.amenities.join(' • ')}</span>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="search-rating">Minimum Rating</label>
-                        <select id="search-rating">
-                            <option value="any">Any rating</option>
-                            <option value="3">3+ stars</option>
-                            <option value="4">4+ stars</option>
-                            <option value="5">5 stars only</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="search-amenities">Amenities</label>
-                        <select id="search-amenities">
-                            <option value="any">Any amenities</option>
-                            <option value="pool">Swimming pool</option>
-                            <option value="gym">Fitness center</option>
-                            <option value="spa">Spa services</option>
-                            <option value="business">Business center</option>
-                        </select>
+                <div class="hotel-price">
+                    <span class="price">${hotel.price}</span>
+                    <button class="btn btn-small">Book Now</button>
+                </div>
+            </div>
+        `;
+    });
+    
+    resultsDiv.innerHTML = html;
+}
+
+function generateItinerary() {
+    const destination = document.getElementById('trip-destination').value;
+    const duration = document.getElementById('trip-duration').value;
+    const interests = document.getElementById('trip-interests').value;
+    const budget = document.getElementById('trip-budget').value;
+    const style = document.getElementById('trip-style').value;
+    
+    const resultsDiv = document.getElementById('itinerary-results');
+    
+    // Simulate AI-generated itinerary
+    const itinerary = {
+        destination: destination,
+        duration: duration,
+        days: []
+    };
+    
+    for (let i = 1; i <= parseInt(duration); i++) {
+        itinerary.days.push({
+            day: i,
+            activities: [
+                {
+                    time: '9:00 AM',
+                    activity: 'Breakfast at local café',
+                    description: 'Start your day with authentic local cuisine'
+                },
+                {
+                    time: '10:30 AM',
+                    activity: 'Visit main attractions',
+                    description: 'Explore the most popular tourist spots'
+                },
+                {
+                    time: '2:00 PM',
+                    activity: 'Lunch break',
+                    description: 'Try local specialties at recommended restaurants'
+                },
+                {
+                    time: '4:00 PM',
+                    activity: 'Cultural experience',
+                    description: 'Immerse yourself in local culture and traditions'
+                },
+                {
+                    time: '7:00 PM',
+                    activity: 'Dinner and nightlife',
+                    description: 'Enjoy evening entertainment and dining'
+                }
+            ]
+        });
+    }
+    
+    let html = `<h3>Your ${duration}-Day Itinerary for ${destination}</h3>`;
+    html += '<div class="itinerary-container">';
+    
+    itinerary.days.forEach(day => {
+        html += `<div class="day-plan"><h4>Day ${day.day}</h4>`;
+        day.activities.forEach(activity => {
+            html += `
+                <div class="activity">
+                    <span class="time">${activity.time}</span>
+                    <div class="activity-details">
+                        <h5>${activity.activity}</h5>
+                        <p>${activity.description}</p>
                     </div>
                 </div>
-                <button type="submit" class="btn">Search Hotels</button>
-            </form>
-            <div id="advanced-hotel-results" class="search-results"></div>
-        </div>
+            `;
+        });
+        html += '</div>';
+    });
+    
+    html += '</div>';
+    resultsDiv.innerHTML = html;
+}
 
-        <!-- Attractions Tab -->
-        <div id="attractions" class="tab-content hidden">
-            <h2>🗺️ Discover Tourist Hotspots</h2>
-            <form id="attractions-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="attraction-city">City</label>
-                        <input type="text" id="attraction-city" placeholder="Which city to explore?" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="attraction-type">Type of Attraction</label>
-                        <select id="attraction-type">
-                            <option value="all">All attractions</option>
-                            <option value="museums">Museums & Culture</option>
-                            <option value="nature">Nature & Parks</option>
-                            <option value="food">Food & Dining</option>
-                            <option value="nightlife">Nightlife & Entertainment</option>
-                            <option value="shopping">Shopping</option>
-                            <option value="historic">Historic Sites</option>
-                        </select>
+function searchAdvancedHotels() {
+    const location = document.getElementById('search-location').value;
+    const price = document.getElementById('search-price').value;
+    const rating = document.getElementById('search-rating').value;
+    const amenities = document.getElementById('search-amenities').value;
+    
+    const resultsDiv = document.getElementById('advanced-hotel-results');
+    
+    // Simulate advanced hotel search
+    const hotels = [
+        {
+            name: 'Business Center Hotel',
+            rating: 4.2,
+            price: '$180/night',
+            amenities: ['WiFi', 'Business Center', 'Gym'],
+            location: 'Business District'
+        },
+        {
+            name: 'Spa Resort & Wellness',
+            rating: 4.7,
+            price: '$280/night',
+            amenities: ['WiFi', 'Spa', 'Pool', 'Restaurant'],
+            location: 'Resort Area'
+        }
+    ];
+    
+    let html = '<h3>Advanced Hotel Search Results</h3>';
+    hotels.forEach(hotel => {
+        html += `
+            <div class="result-item">
+                <div class="hotel-info">
+                    <h4>${hotel.name}</h4>
+                    <div class="hotel-details">
+                        <span>⭐ ${hotel.rating} • ${hotel.location}</span>
+                        <span>${hotel.amenities.join(' • ')}</span>
                     </div>
                 </div>
-                <button type="submit" class="btn">Discover Attractions</button>
-            </form>
-            <div id="attractions-results" class="search-results"></div>
-        </div>
-    </div>
+                <div class="hotel-price">
+                    <span class="price">${hotel.price}</span>
+                    <button class="btn btn-small">View Details</button>
+                </div>
+            </div>
+        `;
+    });
+    
+    resultsDiv.innerHTML = html;
+}
 
-    <script src="main.js"></script>
-</body>
-</html>
+function searchAttractions() {
+    const city = document.getElementById('attraction-city').value;
+    const type = document.getElementById('attraction-type').value;
+    
+    const resultsDiv = document.getElementById('attractions-results');
+    
+    // Simulate attractions search
+    const attractions = [
+        {
+            name: 'City Museum',
+            type: 'Museums & Culture',
+            rating: 4.6,
+            description: 'Explore local history and culture',
+            price: 'Free'
+        },
+        {
+            name: 'Central Park',
+            type: 'Nature & Parks',
+            rating: 4.8,
+            description: 'Beautiful green space for relaxation',
+            price: 'Free'
+        },
+        {
+            name: 'Historic District',
+            type: 'Historic Sites',
+            rating: 4.4,
+            description: 'Walk through centuries of history',
+            price: '$15'
+        }
+    ];
+    
+    let html = `<h3>Top Attractions in ${city}</h3>`;
+    attractions.forEach(attraction => {
+        html += `
+            <div class="result-item">
+                <div class="attraction-info">
+                    <h4>${attraction.name}</h4>
+                    <div class="attraction-details">
+                        <span>⭐ ${attraction.rating} • ${attraction.type}</span>
+                        <p>${attraction.description}</p>
+                    </div>
+                </div>
+                <div class="attraction-price">
+                    <span class="price">${attraction.price}</span>
+                    <button class="btn btn-small">Learn More</button>
+                </div>
+            </div>
+        `;
+    });
+    
+    resultsDiv.innerHTML = html;
+}
+
+// Itinerary editing functions
+function editActivity(button) {
+    const item = button.closest('.itinerary-item');
+    const title = item.querySelector('h4').textContent;
+    const description = item.querySelector('p').textContent;
+    
+    const newTitle = prompt('Edit activity title:', title);
+    const newDescription = prompt('Edit activity description:', description);
+    
+    if (newTitle && newDescription) {
+        item.querySelector('h4').textContent = newTitle;
+        item.querySelector('p').textContent = newDescription;
+    }
+}
+
+function removeActivity(button) {
+    if (confirm('Are you sure you want to remove this activity?')) {
+        button.closest('.itinerary-item').remove();
+    }
+}
+
+function moveActivity(button, direction) {
+    const item = button.closest('.itinerary-item');
+    const container = item.parentElement;
+    
+    if (direction === 'up' && item.previousElementSibling) {
+        container.insertBefore(item, item.previousElementSibling);
+    } else if (direction === 'down' && item.nextElementSibling) {
+        container.insertBefore(item.nextElementSibling, item);
+    }
+}
+
+function addNewActivity() {
+    const container = document.getElementById('editable-itinerary');
+    const newItem = document.createElement('div');
+    newItem.className = 'itinerary-item';
+    
+    const title = prompt('Enter activity title:');
+    const description = prompt('Enter activity description:');
+    const time = prompt('Enter time (e.g., Day 1 - Morning (9:00 AM)):');
+    
+    if (title && description && time) {
+        newItem.innerHTML = `
+            <div class="time-slot">${time}</div>
+            <h4>${title}</h4>
+            <p>${description}</p>
+            <div class="edit-controls">
+                <button onclick="editActivity(this)" style="background: #667eea; color: white;">Edit</button>
+                <button onclick="removeActivity(this)" style="background: #f5576c; color: white;">Remove</button>
+                <button onclick="moveActivity(this, 'up')" style="background: #28a745; color: white;">↑ Move Up</button>
+                <button onclick="moveActivity(this, 'down')" style="background: #28a745; color: white;">↓ Move Down</button>
+            </div>
+        `;
+        container.appendChild(newItem);
+    }
+} 
