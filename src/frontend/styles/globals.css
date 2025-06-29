@@ -403,6 +403,7 @@ section h2 {
 }
 
 .finalize-button {
+  
   background-color: #28a745; /* Green for finalize */
   box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2);
   margin-top: 2rem; /* Give it some space */
@@ -412,3 +413,83 @@ section h2 {
   background-color: #218838;
   box-shadow: 0 6px 15px rgba(40, 167, 69, 0.3);
 }
+
+.cancel-trip-button {
+  background-color: #dc3545; /* Red color for danger */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem; /* Space from other content */
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  align-self: flex-end; /* Aligns to the right if parent is flex column */
+}
+
+.cancel-trip-button:hover {
+  background-color: #c82333;
+  transform: translateY(-1px);
+}
+
+.trip-card {
+  /* Ensure trip-card is a flex container for button positioning */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Pushes button to bottom */
+  align-items: flex-start; /* Aligns content to left */
+  padding-bottom: 1rem; /* Add padding for button */
+  position: relative; /* For potential absolute positioning later if needed */
+}
+
+/* Ensure the link area inside the card takes available space */
+.trip-card > a > div {
+    flex-grow: 1;
+    padding-bottom: 0.5rem; /* Space between text and button */
+}
+
+/* Make sure the text inside the link doesn't get messed up */
+.trip-card h3,
+.trip-card p {
+    margin-bottom: 0.25rem; /* Reduce space after text lines */
+}
+
+.actions {
+  display: flex; /* Make it a flex container */
+  gap: 1.5rem;   /* Add space between child items */
+  margin-top: 2rem; /* Add some space above the buttons */
+  justify-content: center; /* Center the buttons horizontally */
+  width: 100%; /* Ensure it spans the width of its parent */
+  flex-wrap: wrap; /* Allow buttons to wrap to next line on smaller screens */
+}
+
+.back-button {
+  background-color: #6c757d; /* Gray color */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem 1.2rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  margin-bottom: 1.5rem; /* Space below the button */
+  align-self: flex-start; /* Align to the left/start of the flex container (main) */
+}
+
+.back-button:hover {
+  background-color: #5a6268;
+  transform: translateY(-1px);
+}
+
+/* Ensure the main content area (where the back button is) allows for flexible children */
+.main {
+  display: flex;
+  flex-direction: column; /* Stack content vertically */
+  align-items: center; /* Center horizontally */
+  /* ... (other existing styles for .main) ... */
+}
+
+
+
+
+

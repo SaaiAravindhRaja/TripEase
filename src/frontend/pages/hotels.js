@@ -6,7 +6,6 @@ import { useRouter } from 'next/router';
 
 export default function Hotels() {
   const router = useRouter();
-  // MODIFIED: Capture flightBookingId from URL
   const { destination, departureDate, returnDate, flightBookingId } = router.query;
   const [checkInDate, setCheckInDate] = useState(departureDate || '');
   const [checkOutDate, setCheckOutDate] = useState(returnDate || '');
@@ -69,7 +68,6 @@ export default function Hotels() {
       const data = await response.json();
       if (response.ok) {
         alert(data.message + ' Now, let\'s plan your itinerary!');
-        // MODIFIED: Pass both flightBookingId and hotelBookingId
         router.push(`/itinerary?destination=${selectedHotel.destination}&departureDate=${checkInDate}&returnDate=${checkOutDate}&hotelName=${selectedHotel.name}&flightBookingId=${flightBookingId || ''}&hotelBookingId=${data.hotelBookingId}`);
       } else {
         alert(data.message || 'Failed to book hotel.');
@@ -88,6 +86,11 @@ export default function Hotels() {
 
       <main className="main">
         <h1 className="title">Choose Your Accommodation in {destination}</h1>
+
+        {/* NEW: Back Button */}
+        <button onClick={() => router.back()} className="action-button back-button">
+          &larr; Back to Flights
+        </button>
 
         <section className="search-section">
           <h2>Search Hotels</h2>
@@ -115,6 +118,9 @@ export default function Hotels() {
             <p>No hotels found for {destination} or no dates selected. Please ensure destination and dates are correct.</p>
           )}
         </section>
+        <div className="actions">
+          <button onClick={() => router.push('/')} className="action-button logoutButton">Leave and come back later</button>
+        </div>
       </main>
     </div>
   );

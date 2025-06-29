@@ -1,7 +1,7 @@
 // frontend/pages/index.js
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
-import Link from 'next/link'; // Import Link for navigation
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 // import '../styles/globals.css';
 
@@ -18,7 +18,7 @@ export default function Home() {
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userTrips, setUserTrips] = useState([]); // New state for user trips
+  const [userTrips, setUserTrips] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -112,7 +112,6 @@ export default function Home() {
       const data = await response.json();
       if (response.ok) {
         alert(data.message);
-        // MODIFIED: Pass flightBookingId to hotels page
         router.push(`/hotels?destination=${destination}&departureDate=${departureDate}&returnDate=${returnDate}&flightBookingId=${data.flightBookingId}`);
       } else if (response.status === 401) {
         alert(data.message || 'Session expired. Please log in again.');
@@ -174,6 +173,44 @@ export default function Home() {
     alert('Logged out successfully.');
   };
 
+  // NEW: handleCancelTrip function
+  const handleCancelTrip = async (tripId, tripName) => {
+    if (!window.confirm(`Are you sure you want to cancel the trip "${tripName}"? This action cannot be undone.`)) {
+      return; // User cancelled
+    }
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('You must be logged in to cancel a trip.');
+      setIsLoggedIn(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/trips/${tripId}`, {
+        method: 'DELETE', // Use DELETE method
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert(data.message);
+        fetchUserTrips(token); // Refresh the list of trips
+      } else if (response.status === 401) {
+        alert(data.message || 'Session expired. Please log in again.');
+        localStorage.removeItem('token');
+        setIsLoggedIn(false);
+      } else {
+        alert(data.message || 'Failed to cancel trip.');
+      }
+    } catch (error) {
+      console.error('Error cancelling trip:', error);
+      alert('Network error. Could not connect to backend to cancel trip.');
+    }
+  };
+
+
   return (
     <div className="container">
       <Head>
@@ -206,7 +243,7 @@ export default function Home() {
                 <button onClick={handleLogout} className="action-button logoutButton">Logout</button>
             </section>
 
-            {/* NEW: My Trips Section */}
+            {/* My Trips Section */}
             <section className="my-trips-section">
                 <h2>My Saved Trips</h2>
                 {userTrips.length === 0 ? (
@@ -214,13 +251,23 @@ export default function Home() {
                 ) : (
                     <div className="trips-list">
                         {userTrips.map(trip => (
-                            <Link key={trip._id} href={`/summary?tripId=${trip._id}`} passHref>
-                                <div className="item-card trip-card">
-                                    <h3>{trip.name}</h3>
-                                    <p>Destination: {trip.destination}</p>
-                                    <p>Dates: {new Date(trip.startDate).toLocaleDateString()} - {new Date(trip.endDate).toLocaleDateString()}</p>
-                                </div>
-                            </Link>
+                            <div key={trip._id} className="item-card trip-card">
+                                <Link href={`/summary?tripId=${trip._id}`} passHref>
+                                    <div> {/* Wrap content in a div for Link to apply */}
+                                        <h3>{trip.name}</h3>
+                                        <p>Destination: {trip.destination}</p>
+                                        <p>Dates: {new Date(trip.startDate).toLocaleDateString()} - {new Date(trip.endDate).toLocaleDateString()}</p>
+                                    </div>
+                                </Link>
+                                {/* NEW: Cancel button */}
+                                <button
+                                  onClick={() => handleCancelTrip(trip._id, trip.name)}
+                                  className="cancel-trip-button"
+                                  title="Cancel this trip and delete all its data"
+                                >
+                                  Cancel Trip
+                                </button>
+                            </div>
                         ))}
                     </div>
                 )}
@@ -253,6 +300,9 @@ export default function Home() {
                 </div>
               )}
             </section>
+            <div className="actions">
+              <button onClick={() => router.push('/')} className="action-button logoutButton">Leave and come back later</button>
+            </div>
           </>
         )}
       </main>

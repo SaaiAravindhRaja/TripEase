@@ -12,10 +12,9 @@ export default function Itinerary() {
   const [poiSearchTerm, setPoiSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [recommendations, setRecommendations] = useState(null);
-  const [loading, setLoading] = useState(true); // New loading state
-  const [error, setError] = useState(null);   // New error state
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Function to generate (fetch) the itinerary
   const fetchItinerary = async () => {
     setLoading(true);
     setError(null);
@@ -53,7 +52,6 @@ export default function Itinerary() {
     }
   };
 
-  // NEW: Function to finalize the itinerary and save the trip
   const handleFinalizeItinerary = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -78,8 +76,8 @@ export default function Itinerary() {
           destination,
           departureDate,
           returnDate,
-          hotelName, // Can be used for trip naming or summary
-          finalItinerary: itinerary, // Send the user's current (potentially modified) itinerary
+          hotelName,
+          finalItinerary: itinerary,
           flightBookingId: flightBookingId || null,
           hotelBookingId: hotelBookingId || null,
         }),
@@ -103,15 +101,13 @@ export default function Itinerary() {
 
 
   useEffect(() => {
-    // Only fetch itinerary if we have basic trip info
     if (destination && departureDate && returnDate && hotelName) {
       fetchItinerary();
     } else {
-      // If essential params are missing, it means user landed here incorrectly
       setError('Missing trip details. Please start from flight booking.');
       setLoading(false);
     }
-  }, [destination, departureDate, returnDate, hotelName]); // Dependencies for initial fetch
+  }, [destination, departureDate, returnDate, hotelName]);
 
   const handlePoiSearch = async (e) => {
     e.preventDefault();
@@ -136,7 +132,6 @@ export default function Itinerary() {
       if (newItinerary[dayIndex]) {
         newItinerary[dayIndex].activities.push({ name: poi.name, time: 'Flexible' });
       } else {
-        // If the day doesn't exist (e.g., trying to add to Day 5 of a 3-day trip)
         alert(`Day ${dayIndex + 1} does not exist in your itinerary. Add to an existing day.`);
         return prevItinerary;
       }
@@ -189,6 +184,11 @@ export default function Itinerary() {
         <h1 className="title">Craft Your Perfect Itinerary for {destination}</h1>
         <p className="description">Departure: {departureDate} | Return: {returnDate} | Hotel: {hotelName}</p>
 
+        {/* NEW: Back Button */}
+        <button onClick={() => router.back()} className="action-button back-button">
+          &larr; Back to Hotels
+        </button>
+
         <section className="itinerary-section">
           <h2>Your Current Itinerary</h2>
           {itinerary.length === 0 ? (
@@ -209,11 +209,6 @@ export default function Itinerary() {
               </div>
             ))
           )}
-           {itinerary.length > 0 && (
-             <button onClick={handleFinalizeItinerary} className="action-button finalize-button">
-               Finalize Itinerary & View Summary
-             </button>
-           )}
         </section>
 
         <section className="search-section">
@@ -263,8 +258,13 @@ export default function Itinerary() {
             </div>
           </section>
         )}
+        <div className="actions">
+          <button onClick={handleFinalizeItinerary} className="action-button finalize-button">
+            Finalize Itinerary & View Summary
+          </button>
+          <button onClick={() => router.push('/')} className="action-button logoutButton">Leave and come back later</button>
+        </div>
 
-        <button onClick={() => router.push('/')} className="action-button logoutButton">Start New Trip</button>
       </main>
     </div>
   );

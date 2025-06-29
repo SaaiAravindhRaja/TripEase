@@ -410,14 +410,16 @@ app.post('/api/hotels/book', authMiddleware, async (req, res) => {
     await User.findByIdAndUpdate(userId, { $push: { hotelBookings: newBooking._id } });
 
     res.status(200).json({ message: `Hotel ${hotel.name} booked successfully!`, hotelBookingId: newBooking._id });
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error booking hotel:', error);
     res.status(500).json({ message: 'Failed to book hotel due to server error.' });
   }
 });
 
-// MODIFIED: /api/itinerary/generate - now only generates, DOES NOT create Trip
-// It generates a *suggested* itinerary that the frontend can display and modify.
+// @route   POST /api/itinerary/generate
+// @desc    Generate a suggested travel itinerary (fake AI logic)
+// @access  Private
 app.post('/api/itinerary/generate', authMiddleware, async (req, res) => {
   const { destination, departureDate, returnDate, hotelName } = req.body;
   // userId from req.user.id is not directly used here, but middleware still protects
@@ -440,7 +442,7 @@ app.post('/api/itinerary/generate', authMiddleware, async (req, res) => {
 
 // @route   GET /api/poi/search
 // @desc    Search for Points of Interest (POIs) (fake data)
-// @access  Public (no auth needed for searching POIs)
+// @access  Public
 app.get('/api/poi/search', (req, res) => {
   const query = req.query.q?.toLowerCase() || '';
   const foundPOIs = fakePOIs.filter(poi =>
@@ -452,7 +454,9 @@ app.get('/api/poi/search', (req, res) => {
   res.json({ pois: foundPOIs });
 });
 
-// NEW: Finalize Trip endpoint - saves the *finalized* itinerary and creates the main Trip document
+// @route   POST /api/trips/finalize
+// @desc    Saves the *finalized* itinerary and creates the main Trip document
+// @access  Private
 app.post('/api/trips/finalize', authMiddleware, async (req, res) => {
   const { destination, departureDate, returnDate, hotelName, finalItinerary, flightBookingId, hotelBookingId } = req.body;
   const userId = req.user.id;
@@ -482,7 +486,6 @@ app.post('/api/trips/finalize', authMiddleware, async (req, res) => {
       startDate: new Date(departureDate),
       endDate: new Date(returnDate),
       // Ensure IDs are cast to ObjectId or null if not provided, Mongoose handles undefined well.
-      // `|| null` is good for explicit clarity that it might be absent.
       flightBooking: flightBookingId || null,
       hotelBooking: hotelBookingId || null,
       itinerary: newItinerary._id, // Link to the newly saved itinerary
@@ -495,7 +498,8 @@ app.post('/api/trips/finalize', authMiddleware, async (req, res) => {
       message: 'Trip finalized and saved!',
       tripId: newTrip._id, // RETURN THE NEW TRIP ID to the frontend
     });
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error finalizing trip:', error);
     res.status(500).json({ message: 'Failed to finalize trip due to server error.' });
   }
@@ -511,7 +515,8 @@ app.get('/api/trips/my-trips', authMiddleware, async (req, res) => {
                             .sort({ createdAt: -1 }) // Sort by newest first
                             .select('name destination startDate endDate'); // Select only summary fields to keep data light
     res.json({ trips });
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error fetching user trips:', error);
     res.status(500).json({ message: 'Failed to fetch trips.' });
   }
@@ -532,9 +537,61 @@ app.get('/api/trips/:tripId', authMiddleware, async (req, res) => {
       return res.status(404).json({ message: 'Trip not found or unauthorized.' });
     }
     res.json({ trip });
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error fetching single trip:', error);
     res.status(500).json({ message: 'Failed to fetch trip details.' });
+  }
+});
+
+// NEW API ENDPOINT: DELETE /api/trips/:tripId
+// @route   DELETE /api/trips/:tripId
+// @desc    Cancel (delete) a trip and its associated data
+// @access  Private
+app.delete('/api/trips/:tripId', authMiddleware, async (req, res) => {
+  const { tripId } = req.params;
+  const userId = req.user.id;
+
+  try {
+    // Find the trip and ensure it belongs to the logged-in user
+    const tripToDelete = await Trip.findOne({ _id: tripId, userId: userId });
+
+    if (!tripToDelete) {
+      return res.status(404).json({ message: 'Trip not found or you are not authorized to delete it.' });
+    }
+
+    // 1. Delete associated Flight Booking (if exists)
+    if (tripToDelete.flightBooking) {
+      await FlightBooking.findByIdAndDelete(tripToDelete.flightBooking);
+      // Remove from user's array as well (optional, but good for consistency)
+      await User.findByIdAndUpdate(userId, { $pull: { flightBookings: tripToDelete.flightBooking } });
+    }
+
+    // 2. Delete associated Hotel Booking (if exists)
+    if (tripToDelete.hotelBooking) {
+      await HotelBooking.findByIdAndDelete(tripToDelete.hotelBooking);
+      // Remove from user's array as well
+      await User.findByIdAndUpdate(userId, { $pull: { hotelBookings: tripToDelete.hotelBooking } });
+    }
+
+    // 3. Delete associated Itinerary (if exists)
+    if (tripToDelete.itinerary) {
+      await Itinerary.findByIdAndDelete(tripToDelete.itinerary);
+      // Remove from user's array as well
+      await User.findByIdAndUpdate(userId, { $pull: { itineraries: tripToDelete.itinerary } });
+    }
+
+    // 4. Delete the Trip document itself
+    await Trip.findByIdAndDelete(tripId);
+    // Remove from user's array
+    await User.findByIdAndUpdate(userId, { $pull: { trips: tripId } });
+
+
+    res.status(200).json({ message: 'Trip and all associated data cancelled successfully!' });
+
+  } catch (error) {
+    console.error('Error cancelling trip:', error);
+    res.status(500).json({ message: 'Failed to cancel trip due to server error.' });
   }
 });
 
