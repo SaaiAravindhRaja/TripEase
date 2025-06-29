@@ -1,0 +1,513 @@
+/* frontend/styles/globals.css */
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  background-color: #f5f8fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  /* Align to top */
+  align-items: center;
+  padding: 2rem;
+  padding-top: 1rem;
+  /* Adjust top padding */
+}
+
+.main {
+  padding: 2rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  margin-top: 2rem;
+  /* Add margin to separate from top */
+}
+
+.title {
+  font-size: 2.8rem;
+  margin-bottom: 1.5rem;
+  color: #007bff;
+  text-align: center;
+  font-weight: 700;
+}
+
+.description {
+  font-size: 1.1rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #666;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  margin-bottom: 2rem;
+}
+
+.form input[type="email"],
+.form input[type="password"],
+.form input[type="text"],
+.form input[type="date"],
+.form input[type="number"] {
+  padding: 0.9rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 100%;
+  transition: border-color 0.2s ease;
+}
+
+.form input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.form button,
+.action-button {
+  padding: 1rem 1.5rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+}
+
+.form button:hover,
+.action-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+}
+
+.toggleText {
+  margin-top: 1.5rem;
+  color: #666;
+}
+
+.toggleLink {
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+section {
+  width: 100%;
+  margin-bottom: 2.5rem;
+  padding: 1.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+section h2 {
+  color: #007bff;
+  margin-top: 0;
+  margin-bottom: 1.2rem;
+  font-size: 2rem;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 0.8rem;
+}
+
+.item-card {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+}
+
+.item-card:hover {
+  background-color: #e9f5ff;
+  border-color: #b3d7ff;
+  transform: translateY(-3px);
+}
+
+.item-card.selected {
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.item-card p {
+  margin: 0.5rem 0;
+}
+
+.results-section h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #495057;
+  font-size: 1.5rem;
+}
+
+.day-card {
+  border: 1px solid #d4edda;
+  background-color: #d4edda;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.day-card h3 {
+  color: #28a745;
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+  font-size: 1.6rem;
+}
+
+.day-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.day-card li {
+  background-color: #e2f0d9;
+  border-left: 5px solid #28a745;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.remove-button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.remove-button:hover {
+  background-color: #c82333;
+}
+
+.add-to-itinerary-options {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-weight: 600;
+  color: #495057;
+}
+
+.add-button {
+  background-color: #17a2b8;
+  /* Info blue */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.add-button:hover {
+  background-color: #138496;
+}
+
+.recommendations-section {
+  background-color: #e9f5ff;
+  /* Light blue for recommendations */
+  border-color: #cce5ff;
+}
+
+.recommendations-section h2 {
+  color: #0056b3;
+}
+
+.recommendation-card {
+  background-color: #f0f8ff;
+  border: 1px solid #b3d7ff;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.recommendation-card h3 {
+  color: #0056b3;
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+  font-size: 1.4rem;
+}
+
+.recommendation-card ul {
+  list-style: disc;
+  margin-left: 1.5rem;
+}
+
+.logoutButton {
+  background-color: #6c757d;
+  /* Gray for "Start New Trip" */
+  box-shadow: 0 4px 10px rgba(108, 117, 125, 0.2);
+}
+
+.logoutButton:hover {
+  background-color: #5a6268;
+  box-shadow: 0 6px 15px rgba(108, 117, 125, 0.3);
+}
+
+/* Specific form adjustments */
+.auth-form {
+  padding: 1.5rem;
+}
+
+.flight-search-form {
+  padding: 1.5rem;
+}
+
+.hotel-search-form {
+  padding: 1.5rem;
+}
+
+.poi-search-form {
+  padding: 1.5rem;
+}
+
+.my-trips-section {
+  background-color: #f0f7ff;
+  /* Light blue background */
+  border-color: #cce5ff;
+}
+
+.my-trips-section h2 {
+  color: #0056b3;
+}
+
+.trips-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.trip-card {
+  flex: 1 1 calc(50% - 1rem);
+  /* Two cards per row, adjust as needed */
+  max-width: calc(50% - 1rem);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background-color: #ffffff;
+}
+
+.trip-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.trip-card h3 {
+  color: #007bff;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.trip-card p {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+/* Summary Page Styles */
+.trip-name {
+  font-size: 2.2rem;
+  color: #28a745;
+  /* Green for main trip name */
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.summary-section {
+  width: 100%;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.summary-section h3 {
+  color: #007bff;
+  font-size: 1.8rem;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 0.5rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.flight-summary {
+  background-color: #e9f5ff;
+  /* Light blue */
+  border: 1px solid #cce5ff;
+}
+
+.hotel-summary {
+  background-color: #fff8e1;
+  /* Light yellow */
+  border: 1px solid #ffeeba;
+}
+
+.itinerary-summary {
+  background-color: #e2fbe2;
+  /* Light green */
+  border: 1px solid #d4edda;
+}
+
+.day-card h4 {
+  color: #28a745;
+  font-size: 1.3rem;
+  margin-top: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.itinerary-summary ul {
+  list-style: none;
+  padding: 0;
+}
+
+.itinerary-summary li {
+  background-color: #f7fff7;
+  /* Even lighter green */
+  border-left: 4px solid #28a745;
+  padding: 0.6rem 1rem;
+  margin-bottom: 0.4rem;
+  border-radius: 4px;
+}
+
+.finalize-button {
+  background-color: #28a745;
+  /* Green for finalize */
+  box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2);
+  margin-top: 2rem;
+  /* Give it some space */
+}
+
+.finalize-button:hover {
+  background-color: #218838;
+  box-shadow: 0 6px 15px rgba(40, 167, 69, 0.3);
+}
+
+
+/* --- Navbar Styles --- */
+.navbarContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1024px;
+  margin: 0 auto;
+}
+
+.logo {
+  font-size: 1.5rem; /* 24px */
+  font-weight: bold;
+  color: #2563EB; /* A nice blue color */
+  font-family: Georgia, serif;
+}
+
+.userMenuContainer {
+  position: relative;
+}
+
+.userButton {
+  width: 40px;
+  height: 40px;
+  background-color: #F3F4F6; /* light gray */
+  border-radius: 9999px; /* full circle */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #E5E7EB; /* slightly darker gray border */
+  cursor: pointer;
+}
+
+/* --- Dropdown Menu Styles --- */
+.dropdownMenu {
+  position: absolute;
+  right: 0;
+  margin-top: 8px;
+  width: 192px;
+  background-color: white;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+  padding: 8px 0;
+  z-index: 50;
+}
+
+.dropdownButton {
+  width: 100%;
+  text-align: left;
+  padding: 8px 16px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.logoutButton {
+  width: 100%;
+  text-align: left;
+  padding: 8px 16px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #DC2626; /* red color */
+}
+
+/* --- Horizontal Rule Style --- */
+.hr {
+  margin: 4px 0;
+  border: none;
+  border-top: 1px solid #E5E7EB;
+}
+
+/* --- Hover effect for dropdown buttons --- */
+.dropdownButton:hover, .logoutButton:hover {
+    background-color: #f9fafb; /* very light gray */
+}
