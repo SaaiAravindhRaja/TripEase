@@ -202,7 +202,7 @@ export default function FlightSearch() {
 
       {flights.length > 0 && !loading && (
         <div className="results-section">
-          <h3>Available Flights ({flights.length} found)</h3>
+          <h3 className="available-description">Available Flights ({flights.length} found)</h3>
           <div className="flights-list">
             {flights.map((flight) => (
               <Card 
@@ -252,22 +252,22 @@ export default function FlightSearch() {
           {selectedFlight && (
             <div className="booking-section">
               <Card className="booking-card">
-                <h4>Booking Summary</h4>
-                <div className="booking-details">
+                <div className='confirmation-details'>
+                  <h4 className="summary-header-text">Booking Summary</h4>
                   <p><strong>Flight:</strong> {selectedFlight.airline} {selectedFlight.flightNumber}</p>
                   <p><strong>Route:</strong> {selectedFlight.originCity || selectedFlight.origin} → {selectedFlight.destinationCity || selectedFlight.destination}</p>
                   <p><strong>Departure:</strong> {formatTime(selectedFlight.departureTime)}</p>
                   <p><strong>Arrival:</strong> {formatTime(selectedFlight.arrivalTime)}</p>
                   <p><strong>Price:</strong> ${selectedFlight.price} per person</p>
+                  <Button 
+                    onClick={handleBookFlight} 
+                    disabled={bookingLoading}
+                    variant="primary"
+                    className="book-button"
+                  >
+                    {bookingLoading ? 'Booking...' : 'Book This Flight'}
+                  </Button>
                 </div>
-                <Button 
-                  onClick={handleBookFlight} 
-                  disabled={bookingLoading}
-                  variant="primary"
-                  className="book-button"
-                >
-                  {bookingLoading ? 'Booking...' : 'Book This Flight'}
-                </Button>
               </Card>
             </div>
           )}

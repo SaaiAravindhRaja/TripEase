@@ -139,7 +139,7 @@ export default function TripsDashboard({ user }) {
       
       <div className="dashboard-header">
         <h2>Your Trips</h2>
-        <p>Welcome back, {user?.username}! Here are your planned adventures.</p>
+        <p style={{ paddingBottom: 30 }}>Welcome back, {user?.username}! Here are your planned adventures.</p>
         <Button 
           onClick={() => {
             console.log('🔄 Manual refresh clicked');

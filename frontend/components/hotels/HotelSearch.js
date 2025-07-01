@@ -144,7 +144,7 @@ export default function HotelSearch({ destination, departureDate, returnDate, fl
 
       {hotels.length > 0 && !loading && (
         <div className="results-section">
-          <h3>Available Hotels ({hotels.length} found)</h3>
+          <h3 className="available-description">Available Hotels ({hotels.length} found)</h3>
           <div className="hotels-grid">
             {hotels.map((hotel) => (
               <Card 
@@ -173,20 +173,23 @@ export default function HotelSearch({ destination, departureDate, returnDate, fl
           {selectedHotel && (
             <div className="booking-section">
               <Card className="booking-card">
-                <h4>Booking Summary</h4>
-                <p><strong>Hotel:</strong> {selectedHotel.name}</p>
-                <p><strong>Check-in:</strong> {checkInDate}</p>
-                <p><strong>Check-out:</strong> {checkOutDate}</p>
-                <p><strong>Total Cost:</strong> ${selectedHotel.pricePerNight} per night</p>
                 
-                <Button 
-                  onClick={handleBookHotel} 
-                  disabled={bookingLoading}
-                  variant="primary"
-                  className="book-button"
-                >
-                  {bookingLoading ? 'Booking...' : 'Book Selected Hotel'}
-                </Button>
+                <div className='confirmation-details'>
+                  <h4 className="summary-header-text">Booking Summary</h4>
+                  <p><strong>Hotel:</strong> {selectedHotel.name}</p>
+                  <p><strong>Check-in:</strong> {checkInDate}</p>
+                  <p><strong>Check-out:</strong> {checkOutDate}</p>
+                  <p><strong>Total Cost:</strong> ${selectedHotel.pricePerNight} per night</p>
+               
+                  <Button 
+                    onClick={handleBookHotel} 
+                    disabled={bookingLoading}
+                    variant="primary"
+                    className="book-button"
+                  >
+                    {bookingLoading ? 'Booking...' : 'Book Selected Hotel'}
+                  </Button>
+                </div>
               </Card>
             </div>
           )}
