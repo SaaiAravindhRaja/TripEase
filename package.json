@@ -1,11 +1,28 @@
 {
-  "dependencies": {
-    "lucide-react": "^0.525.0",
-    "react-router-dom": "^7.6.3"
+  "name": "trip-planning-app",
+  "version": "1.0.0",
+  "description": "A trip planning app with simulated booking and itinerary generation.",
+  "main": "backend/server.js",
+  "scripts": {
+    "dev:frontend": "cd frontend && next dev",
+    "build:frontend": "cd frontend && next build",
+    "start:frontend": "cd frontend && next start",
+    "start:backend": "node backend/server.js",
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run start:backend\""
   },
-  "devDependencies": {
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.11"
+  "keywords": ["trip planner", "AI", "React", "Next.js", "Node.js", "Express", "MongoDB"],
+  "author": "AI Assistant",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "concurrently": "^8.2.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.4.3",
+    "next": "^14.2.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }
